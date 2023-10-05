@@ -27,7 +27,7 @@ def spawn_pipe(frame_interation, frequency):
     if frame_interation % (FPS * frequency) == 0:
         pipe_x = SCREEN_SIZE[0]
         pipe_y = random.randint(
-            player.radius*2, SCREEN_SIZE[1]-player.radius*2)
+            player.radius*3, SCREEN_SIZE[1]-player.radius*2)
         pipe_length = SCREEN_SIZE[1]
         pipe_width = 50
         pipe_image = pygame.image.load(os.path.join("images", "PipeImage.png"))
@@ -39,7 +39,7 @@ def spawn_pipe(frame_interation, frequency):
                          pipe_image)
         pipes.append(pipe)
         pipe2 = PipeClass(pipe_x,
-                          pipe_y-pipe_length-(player.radius*6),
+                          pipe_y-pipe_length-(player.radius*10),
                           pipe_width,
                           pipe_length,
                           pygame.transform.flip(pipe_image, False, True))
@@ -47,7 +47,8 @@ def spawn_pipe(frame_interation, frequency):
 
 
 def frame_draw():
-    PLAYER_POSITION = (player.x, player.y)
+    PLAYER_POSITION = (player.x-player.image.get_width()/2,
+                       player.y-player.image.get_height()/2)
     screen.fill("blue")
     screen.blit(player.image, PLAYER_POSITION)
     for pipe in pipes:
@@ -56,26 +57,26 @@ def frame_draw():
         if pipes[0].x > player.x:
             pygame.draw.line(screen,
                              pygame.Color("white"),
-                             ((PLAYER_POSITION[0]+player.image.get_width()/2),
+                             ((PLAYER_POSITION[0]+player.image.get_width()),
                               (PLAYER_POSITION[1]+player.image.get_width()/2)),
                              (pipes[0].x+pipes[0].image.get_width()/2,
                               pipes[0].y))
             pygame.draw.line(screen,
                              pygame.Color("white"),
-                             ((PLAYER_POSITION[0]+player.image.get_width()/2),
+                             ((PLAYER_POSITION[0]+player.image.get_width()),
                               (PLAYER_POSITION[1]+player.image.get_width()/2)),
                              (pipes[1].x+pipes[1].image.get_width()/2,
                               pipes[1].y+pipes[1].image.get_height()))
         else:
             pygame.draw.line(screen,
                              pygame.Color("white"),
-                             ((PLAYER_POSITION[0]+player.image.get_width()/2),
+                             ((PLAYER_POSITION[0]+player.image.get_width()),
                               (PLAYER_POSITION[1]+player.image.get_width()/2)),
                              (pipes[-2].x+pipes[-2].image.get_width()/2,
                               pipes[-2].y))
             pygame.draw.line(screen,
                              pygame.Color("white"),
-                             ((PLAYER_POSITION[0]+player.image.get_width()/2),
+                             ((PLAYER_POSITION[0]+player.image.get_width()),
                               (PLAYER_POSITION[1]+player.image.get_width()/2)),
                              (pipes[-1].x+pipes[-1].image.get_width()/2,
                               pipes[-1].y+pipes[-1].image.get_height()))
