@@ -17,12 +17,14 @@ screen = pygame.display.set_mode((SCREEN_SIZE))
 clock = pygame.time.Clock()
 running = True
 
+
+#PLAYER
 player_image = pygame.transform.scale2x(
     pygame.image.load(os.path.join("images", "plaffyDirb.png")))
 player = PlayerClass(SCREEN_SIZE[0] / 8, SCREEN_SIZE[1] / 2, 30, player_image)
+
+#PIPES
 pipes = []
-
-
 def spawn_pipe(frame_interation, frequency):
     if frame_interation % (FPS * frequency) == 0:
         pipe_x = SCREEN_SIZE[0]
@@ -45,10 +47,11 @@ def spawn_pipe(frame_interation, frequency):
                           pygame.transform.flip(pipe_image, False, True))
         pipes.append(pipe2)
 
-
+#Draw screen
 def frame_draw():
     PLAYER_POSITION = (player.x-player.image.get_width()/2,
                        player.y-player.image.get_height()/2)
+    
     screen.fill("blue")
     screen.blit(player.image, PLAYER_POSITION)
     for pipe in pipes:
@@ -82,24 +85,26 @@ def frame_draw():
                               pipes[-1].y+pipes[-1].image.get_height()))
 
 
+#update instances
 def instances_update():
     player.y += GRAVITY
     for pipe in pipes:
         pipe.x -= 2
 
-
+# Avaliate if a player can jump
 def can_player_jump():
-    if keys[pygame.K_SPACE]:
-        player.jump()
+    if player.y > (0+player.radius/2):
+        if keys[pygame.K_SPACE]:
+            player.jump()
 
 
 def collision_detection(player, pipes):
-    player_mask = pygame.mask.from_surface(player.image.convert_alpha())
+    player_mask = pygame.mask.from_surface(player.image)
     for pipe in pipes:
         pipe_mask = pygame.mask.from_surface(pipe.image)
-
-        if pipe_mask.overlap(player_mask, (player.x-pipe.x, player.y-pipe.y)):
-            pass  # handle collision detection
+        if pipe_mask.overlap(player_mask, (player.x-player.radius-pipe.x, player.y-player.radius-pipe.y)):
+            game_over()
+            pass  # need to handle collision for
 
 
 def game_over(running=False):
@@ -116,11 +121,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or keys[pygame.K_ESCAPE]:
             game_over()
-
-    if player.y > (0+player.radius/2):
-        can_player_jump()
-    if player.y >= SCREEN_SIZE[1]:
+    if player.y+player.image.get_height()/20 >= SCREEN_SIZE[1]:
         game_over()
+
+    
+    can_player_jump()
 
     for pipe in pipes:
         if pipe.x <= 0 - pipe.image.get_width():
