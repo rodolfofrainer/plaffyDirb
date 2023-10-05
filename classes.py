@@ -4,6 +4,9 @@ class PlayerClass():
         self.y = y
         self.radius = radius
         self.image = image
+    
+    def jump(self):
+        self.y -=6
 
 
 class PipeClass():

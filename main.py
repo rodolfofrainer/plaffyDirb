@@ -90,7 +90,7 @@ def instances_update():
 
 def can_player_jump():
     if keys[pygame.K_SPACE]:
-        player.y -= 6
+        player.jump()
 
 
 def collision_detection(player, pipes):
@@ -102,23 +102,28 @@ def collision_detection(player, pipes):
             pass  # handle collision detection
 
 
+def game_over(running=False):
+    running = False
+    pygame.quit()
+    quit()
+
+
+# GAME------------------------
 frame_interation = FPS
 while running:
     frame_interation += 1
     keys = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT or keys[pygame.K_ESCAPE]:
-            running = False
-            pygame.quit()
-            quit()
+            game_over()
 
     if player.y > (0+player.radius/2):
         can_player_jump()
     if player.y >= SCREEN_SIZE[1]:
-        break
+        game_over()
 
     for pipe in pipes:
-        if pipe.x <= 0:
+        if pipe.x <= 0 - pipe.image.get_width():
             pipes.remove(pipe)
 
     # spawn pipe on intervals
