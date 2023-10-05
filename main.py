@@ -8,9 +8,8 @@ from classes import PlayerClass, PipeClass
 # CONSTANTS
 SCREEN_SIZE = (750, 1000)
 FPS = 144
-GRAVITY = 5
+GRAVITY = 3
 PLAYER_MAX_SPEED = 20
-PIPE_SPAWN_RATE = 2 * FPS
 
 
 pygame.init()
@@ -18,13 +17,14 @@ screen = pygame.display.set_mode((SCREEN_SIZE))
 clock = pygame.time.Clock()
 running = True
 
-player_image = pygame.transform.scale2x(pygame.image.load(os.path.join("images", "plaffyDirb.png")))
-player = PlayerClass(SCREEN_SIZE[0] / 2, SCREEN_SIZE[1] / 2, 30, player_image)
+player_image = pygame.transform.scale2x(
+    pygame.image.load(os.path.join("images", "plaffyDirb.png")))
+player = PlayerClass(SCREEN_SIZE[0] / 8, SCREEN_SIZE[1] / 2, 30, player_image)
 pipes = []
 
 
-def spawn_pipe(frame_interation):
-    if frame_interation % PIPE_SPAWN_RATE == 0:
+def spawn_pipe(frame_interation, frequency):
+    if frame_interation % (FPS * frequency) == 0:
         pipe_x = SCREEN_SIZE[0]
         pipe_y = random.randint(
             player.radius*2, SCREEN_SIZE[1]-player.radius*2)
@@ -47,10 +47,38 @@ def spawn_pipe(frame_interation):
 
 
 def frame_draw():
+    PLAYER_POSITION = (player.x, player.y)
     screen.fill("blue")
-    screen.blit(player.image, (player.x,player.y))
+    screen.blit(player.image, PLAYER_POSITION)
     for pipe in pipes:
-        screen.blit(pipe.image,(pipe.x, pipe.y))
+        screen.blit(pipe.image, (pipe.x, pipe.y))
+    if len(pipes) > 0:
+        if pipes[0].x > player.x:
+            pygame.draw.line(screen,
+                             pygame.Color("white"),
+                             ((PLAYER_POSITION[0]+player.image.get_width()/2),
+                              (PLAYER_POSITION[1]+player.image.get_width()/2)),
+                             (pipes[0].x+pipes[0].image.get_width()/2,
+                              pipes[0].y))
+            pygame.draw.line(screen,
+                             pygame.Color("white"),
+                             ((PLAYER_POSITION[0]+player.image.get_width()/2),
+                              (PLAYER_POSITION[1]+player.image.get_width()/2)),
+                             (pipes[1].x+pipes[1].image.get_width()/2,
+                              pipes[1].y+pipes[1].image.get_height()))
+        else:
+            pygame.draw.line(screen,
+                             pygame.Color("white"),
+                             ((PLAYER_POSITION[0]+player.image.get_width()/2),
+                              (PLAYER_POSITION[1]+player.image.get_width()/2)),
+                             (pipes[-2].x+pipes[-2].image.get_width()/2,
+                              pipes[-2].y))
+            pygame.draw.line(screen,
+                             pygame.Color("white"),
+                             ((PLAYER_POSITION[0]+player.image.get_width()/2),
+                              (PLAYER_POSITION[1]+player.image.get_width()/2)),
+                             (pipes[-1].x+pipes[-1].image.get_width()/2,
+                              pipes[-1].y+pipes[-1].image.get_height()))
 
 
 def instances_update():
@@ -61,21 +89,19 @@ def instances_update():
 
 def can_player_jump():
     if keys[pygame.K_SPACE]:
-        player.y -= 10
+        player.y -= 6
 
 
 def collision_detection(player, pipes):
     player_mask = pygame.mask.from_surface(player.image.convert_alpha())
     for pipe in pipes:
         pipe_mask = pygame.mask.from_surface(pipe.image)
-        
-        if pipe_mask.overlap(player_mask, (player.x-pipe.x,player.y-pipe.y)):
-            print("collision")
 
-        
+        if pipe_mask.overlap(player_mask, (player.x-pipe.x, player.y-pipe.y)):
+            pass  # handle collision detection
 
 
-frame_interation = PIPE_SPAWN_RATE/3
+frame_interation = FPS
 while running:
     frame_interation += 1
     keys = pygame.key.get_pressed()
@@ -94,10 +120,14 @@ while running:
         if pipe.x <= 0:
             pipes.remove(pipe)
 
-    spawn_pipe(frame_interation)
+    # spawn pipe on intervals
+    spawn_pipe(frame_interation, 2)
+    # Update instances positions
     instances_update()
+    # draw the frame
     frame_draw()
 
+    # detects if player mask and pipe mask collide
     collision_detection(player, pipes)
 
     # flip() the display to put your work on screen
