@@ -33,7 +33,7 @@ def spawn_pipe():
 
     pipe = PipeClass(pipe_x, pipe_y, pipe_width, pipe_length, pipe_image)
     pipes.append(pipe)
-    pipe2 = PipeClass(pipe_x, pipe_y - pipe_length - (player.radius * 10), pipe_width, pipe_length,
+    pipe2 = PipeClass(pipe_x, pipe_y - pipe_length - (player.radius * 8), pipe_width, pipe_length,
                       pygame.transform.flip(pipe_image, False, True))
     pipes.append(pipe2)
 
@@ -55,7 +55,7 @@ def instances_update(players):
         player.y += GRAVITY
 
     for pipe in pipes:
-        pipe.x -= 2
+        pipe.x -= 3
 
 # Detect if player and pipes collided
 def collision_detection(players, ge, nets):
