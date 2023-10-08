@@ -7,7 +7,7 @@ class PlayerClass():
         self.score = score
     
     def jump(self):
-        self.y -=6
+        self.y -= 20
 
 
 class PipeClass():
