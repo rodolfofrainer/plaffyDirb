@@ -39,7 +39,7 @@ def spawn_pipe():
 
 # Draw screen
 def frame_draw(players):
-    screen.fill((0, 0, 255))  # Blue background color
+    screen.fill((173, 216, 230))  # Blue background color
 
     for player in players:
         PLAYER_POSITION = (player.x - player.image.get_width() / 2,
@@ -70,7 +70,7 @@ def collision_detection(players, ge, nets):
                 players.pop(players.index(player))
 
 def eval_genomes(genomes, config):
-    global pipes, gen  # Ensure you use the global 'pipes' and 'gen' variables
+    global pipes, gen
     pipes = []
     gen += 1
 
@@ -123,9 +123,6 @@ def eval_genomes(genomes, config):
                 ge.pop(x)
                 players.pop(x)
 
-        # Detects if player can perform jump
-        if player.y > (0 + player.radius / 2):
-            pass
 
         for pipe in pipes:
             if pipe.x <= 0 - pipe.image.get_width():
