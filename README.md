@@ -1,6 +1,16 @@
 # FlappyDirb
 Using reinforcement learning FlappyDirb is a game that teaches itself to play 
 
+- [FlappyDirb](#flappydirb)
+  - [Description](#description)
+  - [Getting Started](#getting-started)
+    - [Dependencies](#dependencies)
+    - [Instalation](#instalation)
+    - [Executing program](#executing-program)
+  - [Help](#help)
+  - [Authors](#authors)
+
+
 ## Description
 inpired in the popular game FlappyBird and using NEAT (NeuroEvolution of Augmenting Topologies)
 
