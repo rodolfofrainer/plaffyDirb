@@ -12,7 +12,6 @@ GRAVITY = 3
 pygame.init()
 screen = pygame.display.set_mode(SCREEN_SIZE)
 clock = pygame.time.Clock()
-running = True
 
 # PLAYER
 player_image = pygame.transform.scale2x(
@@ -71,7 +70,7 @@ def collision_detection(players, ge, nets):
                 players.pop(players.index(player))
 
 def eval_genomes(genomes, config):
-    global pipes, gen, running  # Ensure you use the global 'running' variable
+    global pipes, gen  # Ensure you use the global 'pipes' and 'gen' variables
     pipes = []
     gen += 1
 
@@ -92,12 +91,13 @@ def eval_genomes(genomes, config):
 
     frame_iteration = FPS
 
-    while running and len(players) > 0:
+    while len(players) > 0:
         frame_iteration += 1
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                exit()
 
         for x, player in enumerate(players):
             ge[x].fitness += 0.1
@@ -118,10 +118,10 @@ def eval_genomes(genomes, config):
                         genome.fitness += 5
 
             if player.y + player.image.get_height() / 20 >= SCREEN_SIZE[1]:
-                ge[players.index(player)].fitness -= 1
-                nets.pop(players.index(player))
-                ge.pop(players.index(player))
-                players.pop(players.index(player))
+                ge[x].fitness -= 1
+                nets.pop(x)
+                ge.pop(x)
+                players.pop(x)
 
         # Detects if player can perform jump
         if player.y > (0 + player.radius / 2):
@@ -167,12 +167,19 @@ def run(config_file):
     p.add_reporter(stats)
     # p.add_reporter(neat.Checkpointer(5))
 
-    # Run for up to 50 generations.
-    winner = p.run(eval_genomes, 50)
+    # Run for a specified number of generations (e.g., 50).
+    while gen < 50:  # Adjust the number of generations as needed
+        p.run(eval_genomes)
+
+        # When all players die in one generation, reset the game and start a new generation
+        print(f'Generation {gen} completed.')
+        # Reset any game-related variables here
+        # Call spawn_pipe() or any other initialization functions
+        pipes.clear()  # Clear pipes
+        # Other game reset logic
 
     # Show final stats
-    print('\nBest genome:\n{!s}'.format(winner))
-
+    print('\nTraining complete.')
 
 if __name__ == '__main__':
     local_dir = os.path.dirname(__file__)
