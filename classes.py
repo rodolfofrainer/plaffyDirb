@@ -1,9 +1,10 @@
 class PlayerClass():
-    def __init__(self, x, y, radius, image)-> None:
+    def __init__(self, x, y, radius, image, score=0)-> None:
         self.x = x
         self.y = y
         self.radius = radius
         self.image = image
+        self.score = score
     
     def jump(self):
         self.y -=6
