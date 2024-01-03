@@ -28,7 +28,7 @@ inpired in the popular game FlappyBird and using NEAT (NeuroEvolution of Augment
 ### Instalation
 Using [pip package manager](https://packaging.python.org/en/latest/tutorials/installing-packages/)
 ```bash
-pip -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Executing program
